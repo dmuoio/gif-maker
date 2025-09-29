@@ -149,6 +149,8 @@ with st.expander("Frame Ordering & Selection", expanded=True):
         reverse_frames = st.checkbox("Make boomerang (play forward then backward)", value=False)
 
 with st.expander("Size & Quality", expanded=True):
+    original_mode = st.checkbox("Original pixels mode (no resize, minimal processing)", value=False,
+                                 help="Keeps original frame dimensions and avoids palette/dither where possible. Note: GIF always reduces colors to ≤256 and transparency to 1-bit.")
     colA, colB, colC = st.columns(3)
     with colA:
         target_width = st.number_input("Target width (px)", min_value=0, max_value=4096, value=512, step=16, help="0 keeps original sizes of the first frame; others will be resized to match.")
@@ -165,6 +167,13 @@ with st.expander("Size & Quality", expanded=True):
         bg_transparent = st.checkbox("Preserve transparency (if present)", value=False)
     with colF:
         bg_color = st.color_picker("Background (if flattening)", value="#FFFFFF")
+
+    # If user wants original pixels, override controls
+    if original_mode:
+        target_width = 0
+        fit_mode = "none"
+        palette = False
+        dither = False
 
 with st.expander("Playback", expanded=True):
     colX, colY, colZ = st.columns(3)
